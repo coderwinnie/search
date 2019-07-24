@@ -134,7 +134,7 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        body = '<a href="https://qt+qunar+com/' + _body['HttpUrl'] + '">语音:' + _body['Secondes'] + '秒,点击下载</a>'
+        body = '<a href="{}/'.format(FILE_URL) + _body['HttpUrl'] + '">语音:' + _body['Seconds'] + '秒,点击下载</a>'
         return body
 
 
