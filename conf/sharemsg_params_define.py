@@ -3,10 +3,6 @@
 from utils.get_conf import get_logger_file, get_config_file
 
 config = get_config_file()
-
-# service_host = config['sharemsg']['app_host']
-# service_port = config['sharemsg']['app_port']
-
 NOT_FOUND_ERROR = "未找到分享记录"
 OUTDATED_ERROR = "分享记录已过期"
 CANT_SHARE_MSG = "无法分享此类型消息"
@@ -22,5 +18,8 @@ MESSAGE_TYPE = {
     30: 'parse_im_obj',
     666: 'parse_im_666card'
 }
+if config['sharemsg']['file_url']:
+    FILE_URL = config['sharemsg']['file_url']
+elif config['qtalk']['file_url']:
+    FILE_URL = config['qtalk']['file_url']
 
-FILE_URL = config['sharemsg']['file_url']
