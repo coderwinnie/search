@@ -134,13 +134,13 @@ if [ $? -eq 0 ];then
         echo "################################"
         echo "服务echo失败,请观察 /startalk/qtalk_search/log/access.log 查看报错"
         echo "################################"
-        cat /startalk/qtalk_search/log/access.log | head -n 20
+        tail -f 20 /startalk/qtalk_search/log/access.log 
       fi
     else
       echo "################################"
       echo "服务启动失败,请观察 /startalk/qtalk_search/log/access.log 查看报错"
       echo "################################"
-      cat /startalk/qtalk_search/log/access.log | head -n 20
+      tail -f 20 /startalk/qtalk_search/log/access.log 
     fi
 else
    supervisord -c /startalk/qtalk_search/conf/supervisor.conf
@@ -155,7 +155,7 @@ else
         echo "################################"
         echo "服务echo失败,请观察 /startalk/qtalk_search/log/access.log 查看报错"
         echo "################################"
-        cat /startalk/qtalk_search/log/access.log | head -n 20
+        tail -f 20 /startalk/qtalk_search/log/access.log 
       fi
    fi
 fi

@@ -11,7 +11,7 @@ from conf.es_params_define import saas
 from elasticsearch import Elasticsearch, helpers
 from xml.etree import ElementTree as eTree
 from elasticsearch_async import AsyncElasticsearch
-
+from conf.constants import r_domain
 from utils.get_conf import get_config_file, get_logger_file
 from utils.common_sql import UserLib, AsyncLib, if_async, domain
 from utils.time_utils import TimeUtils
@@ -196,7 +196,7 @@ class Single:
         userlib = None
         if if_async:
             try:
-                userlib = AsyncLib()
+                userlib = AsyncLib('file-transfer@{}'.format(r_domain))
             except ConnectionError as e:
                 # TODO 这里可能抓不到
                 logger.error(e)
@@ -275,7 +275,7 @@ class Muc:
         userlib = None
         if if_async:
             try:
-                userlib = AsyncLib()
+                userlib =  AsyncLib('file-transfer@{}'.format(r_domain))
             except ConnectionError as e:
                 # TODO 这里可能抓不到
                 logger.error(e)

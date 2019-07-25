@@ -137,13 +137,12 @@ class LookbackLib:
             for arr in single_array:
                 root = eTree.fromstring(arr['msg'])
                 body = root.find('body')
-                if body.attrib.get('msgType','') == '5':
-                    single_array.remove(arr)
-                    continue
+                # if body.attrib.get('msgType','') == '5':
+                #     single_array.remove(arr)
+                #     continue
                 arr['body'] = body.text if body.text else ''
                 arr['extendinfo'] = body.find('extendinfo') if body.find('extendinfo') else ''
                 _u = arr['from'] if arr['to'] == user_id else arr['to']
-                __match_dict = self.user_data.get(_u)
                 arr['icon'] = self.user_data.get(_u, {}).get('u', '')
                 arr['label'] = self.user_data.get(_u, {}).get('n', '')
                 if not arr['label']:

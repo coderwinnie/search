@@ -1312,7 +1312,7 @@ class AsyncLib:
             cache_redis_cli = RedisUtil()
             self.user_data = cache_redis_cli.get_all_user_data(domain=__domain)
             if not self.user_data:
-                __user_lib = UserLib()
+                __user_lib = UserLib(user_id)
                 self.user_data = __user_lib.get_user_data(domain=__domain)
                 __user_lib.close()
                 if self.user_data:
