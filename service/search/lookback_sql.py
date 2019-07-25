@@ -180,9 +180,9 @@ class LookbackLib:
                 root = eTree.fromstring(arr['msg'])
                 body = root.find('body')
  
-                if body.attrib.get('msgType','') == '5':
-                    muc_array.remove(arr)
-                    continue
+                #if body.attrib.get('msgType','') == '5':
+                #    muc_array.remove(arr)
+                #    continue
                 arr['body'] = body.text if body.text else ''
                 arr['extendinfo'] = body.find('extendinfo') if body.find('extendinfo') else ''
                 arr['msgid'] = body.attrib.get('id', '')
