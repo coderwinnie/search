@@ -214,7 +214,7 @@ async def go_coro(if_contact, if_lookback, args, user, habit):
             for todo in if_contact:
                 t = asyncio.create_task(contact.router[todo](user))
                 tasks.append(t)
-    if if_lookback:
+    if if_lookback and if_use_lookback:
         lookback = Lookback(user_id=user, args=args)
         # for todo in if_lookback:
         #     t = asyncio.create_task(lookback.router[todo](user))

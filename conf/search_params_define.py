@@ -81,9 +81,9 @@ ACTION_REGISTER = {
 """
 elasticsearch相关
 """
-if_lookback = config['lookback'].getboolean('lookback')
+if_use_lookback = config['lookback'].getboolean('lookback')
 if_es = config['lookback'].getboolean('if_es')
-if if_lookback and if_es:
+if if_use_lookback and if_es:
     es_connstr = config['elasticsearch']['saas']
 else:
     es_connstr = ''
