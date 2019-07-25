@@ -21,10 +21,10 @@ from utils.redis_utils import RedisUtil
 
 log_path = get_logger_file('search.log')
 lookback_logger = configure_logger('search', log_path)
-if if_lookback and if_es:
+if if_use_lookback and if_es:
     lookback_logger.info("USING ES LOOKBACK..")
     from service.search.lookback_es import LookbackLib
-elif if_lookback and not if_es:
+elif if_use_lookback and not if_es:
     lookback_logger.info("USING SQL LOOKBACK..")
     from service.search.lookback_sql import LookbackLib
 else:
