@@ -5,7 +5,7 @@ __author__ = 'jingyu.he'
 import json
 from utils.common_sql import UserLib
 from xml.etree import ElementTree as eTree
-from conf.search_params_define import if_lookback, if_es
+from conf.search_params_define import if_use_lookback, if_es
 from conf.cache_params_define import SINGLE_KEY, MUC_KEY, SINGLE_TRACE_KEY, MUC_TRACE_KEY, SINGLE_CACHE, MUC_CACHE, \
     ALL_USER_DATA_CACHE, USER_MUCS
 from utils.redis_utils import RedisUtil
