@@ -33,8 +33,12 @@ ckey验证用
 """
 if_redis_sentinel = config['redis'].getboolean('if_sentinel')
 is_check_ckey = config['qtalk'].getboolean('ckey_check')
-single_portrait = config['qtalk']['file_url'] + config['qtalk']['single_portrait']
-muc_portrait = config['qtalk']['file_url'] + config['qtalk']['muc_portrait']
+try:
+    file_url = config['qtalk']['file_url'] 
+except:
+    file_url = config['sharemsg']['file_url']
+single_portrait = file_url + config['qtalk']['single_portrait']
+muc_portrait = file_url + config['qtalk']['muc_portrait']
 if if_redis_sentinel:
     pre_rs_hosts = config['redis_sentinel']['hosts'].split(',')
     r_timeout = float(config['redis_sentinel']['timeout'])

@@ -134,7 +134,8 @@ class Utility:
         except Exception as e:
             print(e)
             return body
-        body = '<a href="{}/'.format(FILE_URL) + _body['HttpUrl'] + '">语音:' + _body['Seconds'] + '秒,点击下载</a>'
+        # body = '<a href="{}/'.format(FILE_URL) + _body['HttpUrl'] + '">语音:' + _body['Seconds'] + '秒,点击下载</a>'
+        body = '<a href="{}/{}">语音:{}秒,点击下载</a>'.format(FILE_URL,_body['HttpUrl'],_body['Seconds'])
         return body
 
 
