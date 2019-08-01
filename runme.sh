@@ -122,10 +122,11 @@ ps -ef|grep supervisord|grep qtalk_search
 if [ $? -eq 0 ];then
     ps aux | grep supervisord | grep -v "grep" | awk -F' ' '{print $2}'| xargs -I {} sudo kill {}
     supervisord -c /startalk/qtalk_search/conf/supervisor.conf
+    sleep 5
 #    supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf restart service
     SERVICE_RESULT=`supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
     if [ $SERVICE_RESULT = "RUNNING" ]; then
-      ECHO_RESULT=`curl -X GET '0.0.0.0:8884/searchecho'`
+      ECHO_RESULT=`curl -s '0.0.0.0:8884/searchecho'`
       if [ ECHO_RESULT = "OK" ]; then
         echo "################################"
         echo "服务正常启动"
@@ -144,9 +145,10 @@ if [ $? -eq 0 ];then
     fi
 else
    supervisord -c /startalk/qtalk_search/conf/supervisor.conf
+   sleep 5
    SERVICE_RESULT=`supervisorctl -c /startalk/qtalk_search/conf/supervisor.conf status service|awk -F ' ' '{print $2}'`
    if [ $SERVICE_RESULT = "RUNNING" ]; then
-      ECHO_RESULT=`curl -X GET '0.0.0.0:8884/searchecho'`
+      ECHO_RESULT=`curl -s '0.0.0.0:8884/searchecho'`
       if [ ECHO_RESULT = "OK" ]; then
         echo "################################"
         echo "服务正常启动"
