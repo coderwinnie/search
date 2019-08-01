@@ -63,6 +63,7 @@ def authorization(func):
 @meeting_blueprint.route('/meeting')
 @authorization
 def main(user_id, ckey):
+    return "该功能暂未开放"
     meeting_logger.info("Get request from " + user_id)
     params = request.args.to_dict()
     # 验证是否可行， 是否json

@@ -538,9 +538,6 @@ class UserLib:
             injection = [user_id, username, limit, offset, exclude_list, user_domain]
 
 
-        # else:
-        #     sql = """select a.muc_name, a.domain, b.show_name, b.muc_title, bG.muc_pic from user_register_mucs as a left join muc_vcard_info as b on concat(a.muc_name, '@', a.domain) = b.muc_name where a.registed_flag != 0 and a.username = $1 and (b.show_name ilike $2 or b.muc_name like $2) order by b.update_time desc limit $3 offset $4"""
-        #     injection = [user_id, "%{}%".format(username), limit, offset]
         conn = self.conn
         cursor = conn.cursor()
         cursor.execute(sql, key_injection)
@@ -986,7 +983,7 @@ class UserLib:
                      )
                  ) pfc left join muc_vcard_info pfv
                  on pfc.to_= split_part(pfv.muc_name,'@',1)
-                 WHERE file ->> 'FileName' {search_model} $1 {time_limit_start} {time_limit_end}
+                 WHERE file ->> 'FileName' {search_model} %(term)s {time_limit_start} {time_limit_end}
                  UNION ALL
                  SELECT file, from_, to_, date, msgid, pfb.user_name as label, pfv.url as icon, msg
                  FROM (
@@ -1289,8 +1286,8 @@ class UserLib:
                      ON 
                         concat(a.muc_name, '@', a.domain) = b.muc_name
                      WHERE 
-                        a.registed_flag != 0 and a.username = $1 and (b.show_name {search_model} $2 or b.muc_name ~ $2) and b.muc_name <> ALL ($5) AND domain = ${searcher_domain_index}
-                     order by b.update_time desc limit $3 offset $4"""
+                        a.registed_flag != 0 and a.username = %(user_s_name)s and (b.show_name {search_model} %(raw_keys)s or b.muc_name ~ %(raw_keys)s) and b.muc_name <> ALL (%(exclude_list)s) AND domain = 'conference.'||%(user_domain)s 
+                     order by b.update_time desc offset %(offset)s limit %(limit)s"""
         return sql
 
 
