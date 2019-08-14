@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="description" content="WebRTC reference app">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+  <meta itemprop="description" content="Video chat using the reference WebRTC application">
+  <meta itemprop="image" content="/images/webrtc-icon-192x192.png">
+  <meta itemprop="name" content="QTALK">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta id="theme-color" name="theme-color" content="#1e1e1e">
+
+  <base target="_blank">
+
+  <title>QTALK</title>
+
+{% if not chromeapp %}
+  <link rel="canonical" href="{{ room_link }}">
+{% endif %}
+  <link rel="stylesheet" href="./static/css/main.css">
+
+
+</head>
+<body>
+
+  <div id="videos" >
+    <!-- class="hidden" -->
+    <video id="mini-video" autoplay playsinline muted></video>
+    <video id="cut-video" autoplay playsinline muted></video>
+    <video id="remote-video" autoplay playsinline></video>
+    <video id="local-video" autoplay playsinline muted></video>
+  </div>
+
+
+  <div id="room-selection" class="hidden">
+    <h1>QTALK RTC</h1>
+    <p id="instructions">Please enter a room name.</p>
+    <div>
+      <div id="room-id-input-div">
+        <input type="text" id="room-id-input" autofocus/>
+        <label class="error-label hidden" for="room-id-input" id="room-id-input-label">房间名需大于等于5个字符</label>
+      </div>
+      <div id="room-id-input-buttons">
+        <button id="join-button">JOIN</button>
+        <button id="random-button">RANDOM</button>
+      </div>
+    </div>
+    <div id="recent-rooms">
+      <p>最近的对话:</p>
+      <ul id="recent-rooms-list"></ul>
+    </div>
+  </div>
+
+  <div id="confirm-join-div" class="hidden">
+    <div>加入房间<span id="confirm-join-room-span"></span>?</div>
+    <button id="confirm-join-button">接受</button>
+    <button id="confirm-leave-button">拒绝</button>
+  </div>
+
+  <footer>
+    <div id="sharing-div">
+      <div id="room-link">等待对方加入房间 <a id="room-link-href" href="{{ room_link + room_id }}" target="_blank">{{ room_link + room_id }}</a></div>
+      <div id="mobileInput" class="hidden">
+        <input id="sendInput" type="text">
+        <button id="sendInputBtn" >发送</button>
+      </div>
+
+    </div>
+    <div id="info-div"></div>
+    <div id="status-div"></div>
+    <div id="rejoin-div" class="hidden"><span>你已离开通话</span> <button id="rejoin-button">重新加入</button><button id="new-room-button">NEW ROOM</button></div>
+  </footer>
+
+  <div id="icons" class="hidden">
+
+    <svg id="draw-canvas" width="48" height="48">
+      <circle cx="565" cy="512" r="550">
+        <title>Draw canvas</title>
+      </circle>
+    </svg>
+
+    <svg id="cut-screen" class="hidden" t="1553535613799" viewBox="0 0 1129 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10473" data-spm-anchor-id="a313x.7781069.0.i4" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48">
+      <circle cx="565" cy="512" r="550">
+        <title>Cut screen</title>
+      </circle>
+      <path fill="white" transform="scale(0.6), translate(370,370)" d="M868.95177918 215.34678468H274.11312994c-10.26749627 0-19.00277466 3.6151618-26.30943653 10.88910739-7.22487113 7.23032433-10.89456058 15.97650768-10.89456059 26.20583515v370.75858453c0 10.24023245 3.66968946 18.95370022 10.89456059 26.22764579 7.30666259 7.22487113 16.04194099 10.86184429 26.30943653 10.86184429h594.83864924c10.28385442 0 19.04094415-3.63697315 26.28217344-10.86184429 7.30120941-7.27394558 10.9218244-15.98741334 10.92182439-26.22764579V252.44172722c0-10.2293275-3.62061501-18.97551083-10.92727686-26.20583516-7.23577681-7.27394558-15.99286582-10.8891081-26.27672097-10.88910738M274.09131931 141.21142578h594.83864924c30.77522572 0 57.07375657 10.86729676 78.86287773 32.59643853 21.78912116 21.74004671 32.66187112 47.91861806 32.66187114 78.62841045v370.76403699c0 30.68798176-10.87274996 56.91562756-32.66187114 78.63386293-21.78912116 21.72914105-48.08765274 32.59643853-78.86287773 32.59643851H608.68737796v74.15716953h111.5465602c10.26204379 0 19.03003849 3.6151618 26.28217344 10.8891081 7.29030445 7.22487113 10.91091874 15.97650768 10.91091872 26.20583518 0 10.24023245-3.62061501 18.98641651-10.91637192 26.20038195-7.25213496 7.28485125-16.01467717 10.90001305-26.27672024 10.90001379H422.80370787c-10.27840195 0-19.0191328-3.6151618-26.30943728-10.90001379-7.25213496-7.21396618-10.89456058-15.96014952-10.89456056-26.20038195 0-10.23477998 3.6478781-18.97551083 10.89456056-26.20583518 7.29030445-7.27394558 16.03103531-10.8891081 26.30943728-10.8891081h111.53565452v-74.15716953H274.09131931c-30.79703633 0-57.09011544-10.86729676-78.86287845-32.59643851C173.43931968 680.11593931 162.54475911 653.88829351 162.54475911 623.20031175V252.44172722C162.54475911 221.72648236 173.43931968 195.54791102 195.22844086 173.80786431 217.00665706 152.07872254 243.29428298 141.21142578 274.09131931 141.21142578" p-id="10474" fill="#ffffff"></path>
+    </svg>
+
+    <svg id="mute-audio" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewbox="-10 -10 68 68">
+      <title>title</title>
+      <circle cx="24" cy="24" r="34">
+        <title>Mute audio</title>
+      </circle>
+      <path class="on" transform="scale(0.6), translate(17,18)" d="M38 22h-3.4c0 1.49-.31 2.87-.87 4.1l2.46 2.46C37.33 26.61 38 24.38 38 22zm-8.03.33c0-.11.03-.22.03-.33V10c0-3.32-2.69-6-6-6s-6 2.68-6 6v.37l11.97 11.96zM8.55 6L6 8.55l12.02 12.02v1.44c0 3.31 2.67 6 5.98 6 .45 0 .88-.06 1.3-.15l3.32 3.32c-1.43.66-3 1.03-4.62 1.03-5.52 0-10.6-4.2-10.6-10.2H10c0 6.83 5.44 12.47 12 13.44V42h4v-6.56c1.81-.27 3.53-.9 5.08-1.81L39.45 42 42 39.46 8.55 6z" fill="white"/>
+      <path class="off" transform="scale(0.6), translate(17,18)"  d="M24 28c3.31 0 5.98-2.69 5.98-6L30 10c0-3.32-2.68-6-6-6-3.31 0-6 2.68-6 6v12c0 3.31 2.69 6 6 6zm10.6-6c0 6-5.07 10.2-10.6 10.2-5.52 0-10.6-4.2-10.6-10.2H10c0 6.83 5.44 12.47 12 13.44V42h4v-6.56c6.56-.97 12-6.61 12-13.44h-3.4z"  fill="white"/>
+    </svg>
+
+    <svg id="mute-video" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewbox="-10 -10 68 68">
+      <circle cx="24" cy="24" r="34">
+        <title>Mute video</title>
+      </circle>
+      <path class="on" transform="scale(0.6), translate(17,16)" d="M40 8H15.64l8 8H28v4.36l1.13 1.13L36 16v12.36l7.97 7.97L44 36V12c0-2.21-1.79-4-4-4zM4.55 2L2 4.55l4.01 4.01C4.81 9.24 4 10.52 4 12v24c0 2.21 1.79 4 4 4h29.45l4 4L44 41.46 4.55 2zM12 16h1.45L28 30.55V32H12V16z" fill="white"/>
+      <path class="off" transform="scale(0.6), translate(17,16)" d="M40 8H8c-2.21 0-4 1.79-4 4v24c0 2.21 1.79 4 4 4h32c2.21 0 4-1.79 4-4V12c0-2.21-1.79-4-4-4zm-4 24l-8-6.4V32H12V16h16v6.4l8-6.4v16z" fill="white"/>
+    </svg>
+
+    <svg id="fullscreen" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewbox="-10 -10 68 68">
+      <circle cx="24" cy="24" r="34">
+        <title>Enter fullscreen</title>
+      </circle>
+      <path class="on" transform="scale(0.8), translate(7,6)" d="M10 32h6v6h4V28H10v4zm6-16h-6v4h10V10h-4v6zm12 22h4v-6h6v-4H28v10zm4-22v-6h-4v10h10v-4h-6z" fill="white"/>
+      <path class="off" transform="scale(0.8), translate(7,6)"  d="M14 28h-4v10h10v-4h-6v-6zm-4-8h4v-6h6v-4H10v10zm24 14h-6v4h10V28h-4v6zm-6-24v4h6v6h4V10H28z" fill="white"/>
+    </svg>
+
+    <svg id="hangup" class="hidden" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewbox="-10 -10 68 68">
+      <circle cx="24" cy="24" r="34">
+        <title>Hangup</title>
+      </circle>
+      <path transform="scale(0.7), translate(11,10)" d="M24 18c-3.21 0-6.3.5-9.2 1.44v6.21c0 .79-.46 1.47-1.12 1.8-1.95.98-3.74 2.23-5.33 3.7-.36.35-.85.57-1.4.57-.55 0-1.05-.22-1.41-.59L.59 26.18c-.37-.37-.59-.87-.59-1.42 0-.55.22-1.05.59-1.42C6.68 17.55 14.93 14 24 14s17.32 3.55 23.41 9.34c.37.36.59.87.59 1.42 0 .55-.22 1.05-.59 1.41l-4.95 4.95c-.36.36-.86.59-1.41.59-.54 0-1.04-.22-1.4-.57-1.59-1.47-3.38-2.72-5.33-3.7-.66-.33-1.12-1.01-1.12-1.8v-6.21C30.3 18.5 27.21 18 24 18z" fill="white"/>
+    </svg>
+
+  </div>
+
+  <div id="privacy"></div>
+  <!--<script src="/Users/he/projects/newrtc/webrtc_single/src/web_app/Canvas-Designer/canvas-designer-widget.js"></script>-->
+
+
+  {% if not chromeapp %}
+  {{ include_loopback_js }}
+{% endif %}
+{{ include_rtstats_js }}
+  <!--<script src="https://getfirebug.com/firebug-lite.js"></script>-->
+  <script src="./static/js/canvas-designer-widget.js"></script>
+  <script src="./static/js/apprtc.debug.js"></script>
+  <script src="./static/js/clipboard.min.js"></script>
+  <!--for screen share-->
+<!--<script src="https://cdn.webrtc-experiment.com/MultiStreamsMixer.min.js"></script>-->
+
+{% if chromeapp %}
+  <script src="/js/appwindow.js"></script>
+{% endif %}
+
+{% if not chromeapp %}
+  <script type="text/javascript">
+    /**
+     * @return {boolean}
+     */
+    function IsPC(){
+      var userAgentInfo = navigator.userAgent;
+      var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+      var flag = true;
+      for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }
+      }
+      return flag;
+    }
+    function getCookie(name) {
+            var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+            if (arr != null) return unescape(arr[2]); return null;
+        };
+    var loadingParams = {
+      errorMessages: {{ error_messages }},
+      isLoopback: {{ is_loopback }},
+      warningMessages: {{ warning_messages }},
+{% if room_id %}
+      roomId: '{{ room_id }}',
+      roomLink: '{{ room_link }}',
+{% endif %}
+      mediaConstraints: {{ media_constraints | safe }},
+      offerOptions: {{ offer_options | safe }},
+      peerConnectionConfig: {{ pc_config | safe }},
+      peerConnectionConstraints: {{ pc_constraints | safe }},
+      iceServerRequestUrl: '{{ ice_server_url }}',
+      iceServerTransports: '{{ ice_server_transports }}',
+      wssUrl: '{{ wss_url }}',
+      wssPostUrl: '{{ wss_post_url }}',
+      bypassJoinConfirmation: {{ bypass_join_confirmation }},
+      versionInfo: '',
+      // versionInfo: {{ version_info }},
+      caller : getCookie('_caller'),
+      callee : getCookie('_callee'),
+      callTime: getCookie('_calltime'),
+      user : getCookie('u'),
+      qCkey : getCookie('q_ckey'),
+      isCutScreen: {{ is_screenshare }},
+      isKurento : {{ k }},
+      kurentoWss : '{{ kurento_wss }}',
+      isPc : IsPC(),
+      roomServer: '{{ room_link }}'
+    };
+
+    var appController;
+
+    function initialize() {
+      if (document.visibilityState === 'prerender') {
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return;
+      }
+      appController = new AppController(loadingParams);
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState === 'prerender') {
+        return;
+      }
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      initialize();
+    }
+
+    initialize();
+  </script>
+
+{% endif %}
+</body>
+</html>
